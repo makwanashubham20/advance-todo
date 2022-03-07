@@ -47,10 +47,15 @@ function Todo() {
         setList(list);
     }
 
-    const deleteTask = (id) => {
+    const deleteTask = (order) => {
         let list = todoList.filter(item => {
-            if (item.key !== id) {
-                if (item.order > id) {
+            if(item.order!==order){
+                return item;
+            }
+        })
+        list = list.map(item => {
+            if (item.order !== order) {
+                if (item.order > order) {
                     return {
                         ...item,
                         order: item.order - 1
@@ -61,6 +66,7 @@ function Todo() {
                 }
             }
         });
+        console.log(list);
         setList(list);
     }
 
