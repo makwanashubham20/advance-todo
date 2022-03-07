@@ -1,6 +1,6 @@
-import {memo, useState} from 'react';
+import { memo, useState } from 'react';
 
-function Head(props){
+function Head({ completeAllTasks, addTask }) {
     const [input, setInput] = useState("");
     const [toggle, setToggle] = useState(false);
 
@@ -8,15 +8,15 @@ function Head(props){
         setInput(event.target.value);
     }
 
-    const submitHandler =(event) => {
+    const submitHandler = (event) => {
         event.preventDefault();
-        props.addTask(input);
+        addTask(input);
         setInput("");
     }
 
     const completeHandler = (event) => {
         event.preventDefault();
-        props.completeAllTasks(toggle);
+        completeAllTasks(toggle);
         const tmp = toggle;
         setToggle(!tmp);
     }
@@ -26,7 +26,7 @@ function Head(props){
             <h1>ToDos</h1>
             <form id="input-form">
                 <button onClick={completeHandler} id="toggle"><i className="arrow down"></i></button>
-                <input type="text" id="task-input" placeholder="Add task name..." autoComplete="off" value={input} onChange={changeHandler}/>
+                <input type="text" id="task-input" placeholder="Add task name..." autoComplete="off" value={input} onChange={changeHandler} />
                 <button id="add-task" onClick={submitHandler}>Add Task</button>
             </form>
         </div>

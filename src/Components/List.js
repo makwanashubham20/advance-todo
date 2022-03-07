@@ -1,21 +1,12 @@
-function List(props) {
-    const element = props.todoList.map(item => {
-        return (
-            <li key={item.key}>
-                <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={() => props.CompleteTask(item.key)} />
-                <span className="editable" onClick={() => props.CompleteTask(item.key)}>{item.isCompleted? (<s>{item.task}</s>):<>{item.task}</>}</span>
-                <button onClick={() => props.deleteTask(item.key)} id="delete-task">X</button>
-            </li>
-        );
-    });
+function List({ item, deleteTask, CompleteTask, dragHandler, dropHandler }) {
 
     return (
-        <div id="todo-list">
-            <ul>
-                {element}
-            </ul>
-        </div>
-    )
+        <li key={item.key} id={item.key} draggable={true} onDragOver={(ev) => ev.preventDefault()} onDragStart={dragHandler} onDrop={dropHandler}>
+            <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={() => CompleteTask(item.key)} />
+            <span className="editable" onClick={() => CompleteTask(item.key)}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}</span>
+            <button onClick={() => deleteTask(item.key)} id="delete-task">X</button>
+        </li>
+    );
 }
 
 export default List;
