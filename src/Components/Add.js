@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 
-function Head({ addTask }) {
+function Head({ addTask, type }) {
     const [input, setInput] = useState("");
     const [isNewTask, setNewTask] = useState(false);
   
@@ -13,7 +13,6 @@ function Head({ addTask }) {
         addTask(input);
         setInput("");
         setNewTask(false);
-
     }
 
     const cancelHandler = (event) => {
@@ -29,15 +28,15 @@ function Head({ addTask }) {
 
     const showInput = (<div className="add-task">
         <legend>Title</legend>
-        <input type="text" className="task-input" placeholder="Task" autoComplete="off" value={input} onChange={changeHandler} />
+        <input type="text" className="task-input" placeholder={type} autoComplete="off" value={input} onChange={changeHandler} />
         <div className="button-line">
             <button onClick={cancelHandler}>Close</button>
-            <button onClick={submitHandler}>Add Task</button>
+            <button onClick={submitHandler}>Add {type}</button>
         </div>
     </div>);
 
     const showButton = (<>
-        <button className="initiate-addtask" onClick={initiateHandler}>Add New Task</button>
+        <button className="initiate-addtask" onClick={initiateHandler}>Add New {type}</button>
     </>)
 
     return (
