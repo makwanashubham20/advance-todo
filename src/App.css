@@ -1,104 +1,90 @@
+hr{
+  border: 1px solid black;
+}
+
+body{
+  margin: 1vh 1vw;
+}
+
 h1{
+  font-size: 2.5rem;
   text-align: center;
-  color: red;
-  font-family:'Times New Roman', Times, serif;
+  margin: 1rem 0;
 }
 
-#input-form{
-  display: flex;
-  flex-direction: row;
-}
-
-#head{
-  padding: 2vh 10vw;
+.input-form, #todo-list{
+  margin: 2% 3%;
   background-color: pink;
+  padding: 2% 2%;
+  border-radius: 0.5rem;
 }
 
-#task-input{
-  padding: 0.5rem 1rem;
-  width: 70%;
-  border: 1px solid white;
-}
-
-#task-input:focus{
-  outline: none;
-}
-
-#add-task{
+button {
+  margin: 1% 1%;
+  padding: 1% 3%;
+  border-radius: 0.5rem;
+  background-color: #007bff;
   cursor: pointer;
-  padding: 0.5rem 1rem;
-  width: 30%;
-  background-color: #4267B2;
   color: white;
-  border: 1px solid #4267B2;
-  border-radius: 0.1rem;
-  margin: 0rem 0.1rem;
+  border-color: #007bff;
+}
+
+legend{
+  font-weight:bold;
+  font-size: 0.8rem;
+  margin: 0.2rem 0;
+}
+
+.task-input{
+  border-radius: 0.2rem;
+  border-color: lightgrey;
+  padding: 1% 3%;
+  margin: 1% 1%;
+  width: 40%;
+}
+
+.task-input:focus{
+  border-color: lightgray;
+}
+
+.button-line{
+  display: flex;
+  justify-content: center;
+  margin: 1% 0 0 0;
 }
 
 ul{
   list-style-type: none;
+  padding: 0 0 0 0;
   display: flex;
   flex-direction: column;
-  padding: 0;
 }
 
 #todo-list{
-  padding: 0vh 10vw;
+  background-color: white;
+  border: 0.2rem solid lightgrey;
+  border-radius: 0.5rem;
 }
 
 li{
-  background-color: white;
-  padding: 0.5rem 1rem;
+  margin: 1% 2%;
+  border-radius: 0.5rem;
+  border: 0.2rem solid lightgrey;
   display: flex;
-  border: 1px solid white;
-}
-
-li:hover{
-  background-color: pink;
-}
-
-#delete-task{
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  background-color: #4267B2;
-  color: white;
-  border: 1px solid #4267B2;
-  border-radius: 0.1rem;
-  margin: 0rem 0.1rem;
 }
 
 .editable{
-  width: 100%;
-  margin: 0rem 0.1rem;
-  padding: 0.5rem 1rem;
+  padding: 1% 2%;
+  margin: 1% 1%;
+  width: 100%
+}
+
+.delete-task{
+  cursor: pointer;
+  color: red;
+  margin: 1% 0;
 }
 
 .Completed{
-  margin: 0.7rem 0.1em;
-}
-
-.arrow {
-  border: solid black;
-  border-width: 0 2px 2px 0;
-  display: inline-block;
-  padding: 3px;
-}
-
-.down {
-  transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
-}
-
-#toggle{
-  background-color: white;
-  border: 1px solid white;
-  padding: 0.5rem 1rem;
-}
-
-li:nth-child(odd){
-  background-color: lightgrey;
-}
-
-li:nth-child(odd):hover{
-  background-color: pink;
+  margin: 2% 1%;
 }

@@ -1,3 +1,5 @@
+import {MdDelete} from 'react-icons/md'
+
 function List({ item, deleteTask, CompleteTask, dragHandler, dropHandler }) {
 
     return (
@@ -6,7 +8,7 @@ function List({ item, deleteTask, CompleteTask, dragHandler, dropHandler }) {
         onTouchStart={dragHandler} onTouchMove={dropHandler}>
             <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={() => CompleteTask(item.key)} />
             <span className="editable" onClick={() => CompleteTask(item.key)}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}</span>
-            <button onClick={() => deleteTask(item.order)} id="delete-task">X</button>
+            <MdDelete size="30px" className="delete-task" onClick={() => deleteTask(item.order)}></MdDelete>
         </li>
     );
 }

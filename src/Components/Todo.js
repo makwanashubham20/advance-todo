@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Head from './Head';
-import List from './List';
+import Add from './Add';
+import List from './ShowTask';
 
 function Todo() {
     const [todoList, setList] = useState(() => {
@@ -49,7 +49,7 @@ function Todo() {
 
     const deleteTask = (order) => {
         let list = todoList.filter(item => {
-            if(item.order!==order){
+            if (item.order !== order) {
                 return item;
             }
         })
@@ -66,7 +66,6 @@ function Todo() {
                 }
             }
         });
-        console.log(list);
         setList(list);
     }
 
@@ -75,23 +74,13 @@ function Todo() {
         localStorage.setItem("lastKey", lastKey);
     }, [todoList, lastKey]);
 
-    const completeAllTasks = (value) => {
-        let list = todoList.map((item) => {
-            return ({
-                ...item,
-                isCompleted: value
-            });
-        })
-        setList(list);
-    }
-
     const handleDrag = (event) => {
         setDragId(event.currentTarget.id);
     }
 
     const handleDrop = (event) => {
-        if(dragid==Number(event.currentTarget.id)){
-            return ;
+        if (dragid == Number(event.currentTarget.id)) {
+            return;
         }
         const dragItem = todoList.find((item) => item.key === Number(dragid));
         const dropItem = todoList.find((item) => item.key === Number(event.currentTarget.id));
@@ -141,7 +130,9 @@ function Todo() {
 
     return (
         <>
-            <Head completeAllTasks={completeAllTasks} addTask={addTask} />
+            <hr />
+            <h1>ToDo List</h1>
+            <Add addTask={addTask} />
             <div id="todo-list">
                 <ul>
                     {
@@ -149,7 +140,9 @@ function Todo() {
                             .sort((a, b) => a.order - b.order)
                             .map(items => {
                                 return (
+                                    <>
                                     <List CompleteTask={CompleteTask} dragHandler={handleDrag} dropHandler={handleDrop} deleteTask={deleteTask} item={items} />
+                                    </>
                                 );
                             })
                     }
