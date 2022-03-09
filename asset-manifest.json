@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/advance-todo/static/css/main.a1e6795e.css",
-    "main.js": "/advance-todo/static/js/main.52b63596.js",
+    "main.css": "/advance-todo/static/css/main.0bd7f809.css",
+    "main.js": "/advance-todo/static/js/main.f90153b1.js",
     "index.html": "/advance-todo/index.html",
-    "main.a1e6795e.css.map": "/advance-todo/static/css/main.a1e6795e.css.map",
-    "main.52b63596.js.map": "/advance-todo/static/js/main.52b63596.js.map"
+    "main.0bd7f809.css.map": "/advance-todo/static/css/main.0bd7f809.css.map",
+    "main.f90153b1.js.map": "/advance-todo/static/js/main.f90153b1.js.map"
   },
   "entrypoints": [
-    "static/css/main.a1e6795e.css",
-    "static/js/main.52b63596.js"
+    "static/css/main.0bd7f809.css",
+    "static/js/main.f90153b1.js"
   ]
 }
