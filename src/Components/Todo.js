@@ -423,20 +423,6 @@ function Todo() {
             }
         });
 
-        if (flag) {
-            list = list.map(item => {
-                if (item.key === parentOrder) {
-                    return {
-                        ...item,
-                        isCompleted: true
-                    }
-                }
-                else {
-                    return item;
-                }
-            })
-        }
-
         setList(list);
     }
 
