@@ -1,17 +1,17 @@
 import { MdDelete, MdFavorite, MdOutlineFavoriteBorder } from 'react-icons/md';
 
-function ShowSubtask({item, parentKey, CompleteTask, dragHandler, favoriteATask, deleteTask, clearSubtask, dropHandler}){
+function ShowSubtask({item, parentOrder, CompleteTask, dragHandler, favoriteATask, deleteTask, clearSubtask, dropHandler, parentID}){
     return(
-        <li key={item.key} id={item.key} draggable={true} onDragStart={(event) => dragHandler(event, parentKey)} onDrop={clearSubtask} onDragOver={(event) => dropHandler(event,parentKey)}>
+        <li key={item.key} id={item.key} draggable={true} onDragStart={(event) => dragHandler(event, parentID)} onDrop={clearSubtask} onDragOver={(event) => dropHandler(event,parentID)}>
             <div className="one-task">
-                <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={(event) => CompleteTask(parentKey, item.key)} />
-                <span className="editable" onClick={() => CompleteTask(parentKey, item.key)}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}
+                <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={(event) => CompleteTask(parentOrder, item.order)} />
+                <span className="editable" onClick={() => CompleteTask(parentOrder, item.order)}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}
                     <div>
                         {item.date}
                     </div>
                 </span>
-                {item.isFavorite ? <MdFavorite size="30px" className="fav-task" onClick={() => favoriteATask(parentKey, item.key)} /> : <MdOutlineFavoriteBorder size="30px" className="fav-task" onClick={() => favoriteATask(parentKey, item.key)} />}
-                <MdDelete size="30px" className="delete-task" onClick={() => deleteTask(parentKey, item.order)}></MdDelete>
+                {item.isFavorite ? <MdFavorite size="30px" className="fav-task" onClick={() => favoriteATask(parentOrder, item.order)} /> : <MdOutlineFavoriteBorder size="30px" className="fav-task" onClick={() => favoriteATask(parentOrder, item.order)} />}
+                <MdDelete size="30px" className="delete-task" onClick={() => deleteTask(parentOrder, item.order)}></MdDelete>
             </div>
         </li>
     );

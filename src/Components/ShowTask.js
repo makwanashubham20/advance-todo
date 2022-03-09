@@ -10,13 +10,13 @@ function ShowTask({item, dragHandler, dropHandler, CompleteTask, favoriteATask, 
             onDragOver={(ev) => ev.preventDefault()} onDragStart={dragHandler} onDragEnter={dropHandler}
             onTouchStart={dragHandler} onTouchMove={dropHandler} onDrop={clearSubtask}>
             <div className="one-task">
-                <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={() => CompleteTask(item.key)} />
-                <span className="editable" onClick={() => CompleteTask(item.key)}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}
+                <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={() => CompleteTask(item.order)} />
+                <span className="editable" onClick={() => CompleteTask(item.order)}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}
                     <div>
                         {item.date}
                     </div>
                 </span>
-                {item.isFavorite ? <MdFavorite size="35px" className="fav-task" onClick={() => favoriteATask(item.key)} /> : <MdOutlineFavoriteBorder size="35px" className="fav-task" onClick={() => favoriteATask(item.key)} />}
+                {item.isFavorite ? <MdFavorite size="35px" className="fav-task" onClick={() => favoriteATask(item.order)} /> : <MdOutlineFavoriteBorder size="35px" className="fav-task" onClick={() => favoriteATask(item.order)} />}
                 <MdDelete size="35px" className="delete-task" onClick={() => deleteTask(item.order)}></MdDelete>
                 {(item.isTask === true) ?
                     <MdArrowDropUp className="fav-task" size="35px" 
@@ -26,11 +26,11 @@ function ShowTask({item, dragHandler, dropHandler, CompleteTask, favoriteATask, 
             </div>
             {item.isTask?
             <div className="sub-task">
-                <Add type="Subtask" addTask={(name, date) => addSubtask(name, date, item.key)} />
+                <Add type="Subtask" addTask={(name, date) => addSubtask(name, date, item.order)} />
                 <ul>
                     {
                         item.subTasks.map(items => {
-                            return <ShowSubtask item={items} parentKey={item.key} CompleteTask={completeSubtask} 
+                            return <ShowSubtask item={items} parentID={item.key} parentOrder={item.order} CompleteTask={completeSubtask} 
                             deleteTask={deleteSubtask} favoriteATask={favoriteAsubTask}
                             dragHandler={handleSubtaskdrag} clearSubtask={clearSubtask}
                             dropHandler={handleSubtaskdrop} />

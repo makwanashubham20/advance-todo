@@ -1,3 +1,4 @@
+import { isContentEditable } from '@testing-library/user-event/dist/utils';
 import React, { useState, useEffect } from 'react';
 import Add from './Add';
 import ShowTask from './ShowTask';
@@ -14,33 +15,37 @@ function Todo() {
     });
 
     const [lastKey, setKey] = useState(0 || Number(localStorage.getItem("lastKey")));
+    const [lastIncomplete, setLast] = useState(0 || Number(localStorage.getItem("lastIncomplete")))
     const [dragid, setDragId] = useState(-1);
     const [childid, setChildId] = useState(-1);
 
     const addTask = (task, date) => {
-        if (!task) {
-            alert("Please enter a valid task...");
-            return;
-        }
-        let list = [...todoList];
-        list.push({
+        let list = todoList.map(item => {
+            return {
+                ...item,
+                order: item.order+1
+            }
+        });
+        list.unshift({
             key: lastKey + 1,
             task: task,
             isCompleted: false,
-            order: todoList.length + 1,
+            order: 1,
             isFavorite: false,
             isTask: true,
             subtaskKey: 0,
             subTasks: [],
-            date: date
+            date: date,
+            lastIncomplete: 0
         });
+        setLast(prev => prev+1);
         setKey(prev => prev + 1);
         setList(list);
     }
 
-    const favoriteATask = (key) => {
+    const favoriteATask = (order) => {
         let list = todoList.map(item => {
-            if (item.key === key) {
+            if (item.order === order) {
                 return {
                     ...item,
                     isFavorite: !item.isFavorite
@@ -53,9 +58,13 @@ function Todo() {
         setList(list);
     }
 
-    const CompleteTask = (id) => {
+    const CompleteTask = (order) => {
+        let flag=true;
         let list = todoList.map(item => {
-            if (item.key === id) {
+            if (item.order === order) {
+                if(item.isCompleted){
+                    flag=false;
+                }
                 return {
                     ...item,
                     isCompleted: !item.isCompleted
@@ -65,6 +74,50 @@ function Todo() {
                 return item;
             }
         });
+
+        if(flag){
+            list = list.map(item => {
+                if(item.order>order && item.order<=lastIncomplete){
+                    return{
+                        ...item,
+                        order: item.order-1
+                    }
+                }
+                else if(item.order===order){
+                    return{
+                        ...item,
+                        order: lastIncomplete
+                    }
+                }
+                else{
+                    return item;
+                }
+            });
+            setLast(prev => prev-1);
+        }
+        else{
+            list = list.map(item => {
+                if(item.order>=lastIncomplete+1 && item.order<order){
+                    return {
+                        ...item,
+                        order: item.order+1
+                    }
+                }
+                else if(item.order===order){
+                    return {
+                        ...item,
+                        order: lastIncomplete+1
+                    }
+                }
+                else{
+                    return item;
+                }
+            })
+            setLast(prev => prev + 1);
+        }
+
+        list.sort((a,b) => (a.order-b.order));
+
         setList(list);
     }
 
@@ -88,6 +141,10 @@ function Todo() {
             }
         });
 
+        if(order<=lastIncomplete){
+            setLast(prev => prev -1);
+        }
+
         list=list.sort((a,b) => (a.order-b.order));
         setList(list);
     }
@@ -95,7 +152,8 @@ function Todo() {
     useEffect(() => {
         localStorage.setItem("todoList", JSON.stringify(todoList));
         localStorage.setItem("lastKey", lastKey);
-    }, [todoList, lastKey]);
+        localStorage.setItem("lastIncomplete", lastIncomplete);
+    }, [todoList, lastKey, lastIncomplete]);
 
     const handleDrag = (event) => {
         setDragId(Number(event.currentTarget.id));
@@ -110,6 +168,10 @@ function Todo() {
 
         const dragItem = todoList.find((item) => item.key === Number(dragid));
         const dropItem = todoList.find((item) => item.key === Number(event.currentTarget.id));
+
+        if(dragItem.isCompleted!==dropItem.isCompleted){
+            return ;
+        }
 
         var updatedList = [];
 
@@ -172,38 +234,46 @@ function Todo() {
 
     //subTasks functionalities
 
-    const addSubtask = (name, date, key) => {
+    const addSubtask = (name, date, order) => {
         const list = todoList.map(item => {
-            if (item.key === key) {
+            if (item.order === order) {
+                var updatedList = item.subTasks.map(subitem => {
+                    return({
+                        ...subitem,
+                        order: subitem.order+1
+                    });
+                })
+                updatedList.unshift(
+                    {
+                        key: item.subtaskKey,
+                        task: name,
+                        isCompleted: false,
+                        order: 1,
+                        isTask: false,
+                        isFavorite: false,
+                        date: date
+                    }
+                );
                 return ({
                     ...item,
                     subtaskKey: item.subtaskKey + 1,
-                    subTasks: [
-                        ...item.subTasks,
-                        {
-                            key: item.subtaskKey,
-                            task: name,
-                            isCompleted: false,
-                            order: item.subTasks.length + 1,
-                            isTask: false,
-                            isFavorite: false,
-                            date: date
-                        }
-                    ]
+                    subTasks: updatedList,
+                    lastIncomplete: item.lastIncomplete+1
                 });
             }
             else {
                 return item;
             }
         });
+
         setList(list);
     }
 
-    const favoriteAsubTask = (parentKey, childKey) => {
+    const favoriteAsubTask = (parentOrder, childOrder) => {
         const list = todoList.map(item => {
-            if (item.key === parentKey) {
+            if (item.order === parentOrder) {
                 const sublist = item.subTasks.map(subitem => {
-                    if (subitem.key === childKey) {
+                    if (subitem.order === childOrder) {
                         return ({
                             ...subitem,
                             isFavorite: !subitem.isFavorite
@@ -225,9 +295,9 @@ function Todo() {
         setList(list);
     }
 
-    const deleteSubtask = (parentKey, childOrder) => {
+    const deleteSubtask = (parentOrder, childOrder) => {
         const list = todoList.map(item => {
-            if (item.key === parentKey) {
+            if (item.order === parentOrder) {
                 var sublist = item.subTasks.filter(subitem => {
                     if (subitem.order !== childOrder) {
                         return item;
@@ -248,26 +318,40 @@ function Todo() {
 
                 sublist=sublist.sort((a,b) => (a.order-b.order))
 
-                return ({
-                    ...item,
-                    subTasks: sublist
-                });
+                console.log("hello");
+                if(childOrder<=item.lastIncomplete){
+                    return ({
+                        ...item,
+                        lastIncomplete: item.lastIncomplete-1,
+                        subTasks: sublist
+                    });
+                }
+                else{
+                    return ({
+                        ...item,
+                        subTasks: sublist
+                    });
+                }
+
             }
             else {
                 return item;
             }
         });
+
         setList(list);
     }
 
-    const completeSubtask = (parentKey, childKey) => {
+    const completeSubtask = (parentOrder, childOrder) => {
         let flag = 1;
+        let flag2 = true;
         var list = todoList.map(item => {
-            if (item.key === parentKey) {
-                const sublist = item.subTasks.map(subitem => {
-                    if (subitem.key === childKey) {
+            if (item.order === parentOrder) {
+                var sublist = item.subTasks.map(subitem => {
+                    if (subitem.order === childOrder) {
                         if (subitem.isCompleted) {
                             flag = 0;
+                            flag2=false;
                         }
                         return ({
                             ...subitem,
@@ -281,10 +365,58 @@ function Todo() {
                         return subitem;
                     }
                 });
-                return ({
-                    ...item,
-                    subTasks: sublist
-                });
+
+                if(flag2){
+                    sublist = sublist.map(subitem => {
+                        if(subitem.order>childOrder && subitem.order<=item.lastIncomplete){
+                            return {
+                                ...subitem,
+                                order: subitem.order-1
+                            }
+                        }
+                        else if(subitem.order===childOrder){
+                            return{
+                                ...subitem,
+                                order: item.lastIncomplete
+                            }
+                        }
+                        else{
+                            return subitem;
+                        }
+                    });
+                    sublist.sort((a,b) => (a.order-b.order));
+                    return ({
+                        ...item,
+                        lastIncomplete: item.lastIncomplete-1,
+                        subTasks: sublist
+                    });
+                }
+                else{
+                    sublist = sublist.map(subitem => {
+                        if(subitem.order>=item.lastIncomplete+1 && subitem.order<childOrder){
+                            return{
+                                ...subitem,
+                                order: subitem.order+1
+                            };
+                        }
+                        else if(subitem.order===childOrder){
+                            return{
+                                ...subitem,
+                                order: item.lastIncomplete+1
+                            };
+                        }
+                        else{
+                            return subitem;
+                        }
+                    });
+                    
+                    sublist.sort((a,b) => (a.order-b.order));
+                    return ({
+                        ...item,
+                        lastIncomplete: item.lastIncomplete+1,
+                        subTasks: sublist 
+                    });
+                }
             }
             else {
                 return item;
@@ -293,7 +425,7 @@ function Todo() {
 
         if (flag) {
             list = list.map(item => {
-                if (item.key === parentKey) {
+                if (item.key === parentOrder) {
                     return {
                         ...item,
                         isCompleted: true
@@ -314,7 +446,6 @@ function Todo() {
     }
 
     const handleSubtaskdrag = (event, parentKey) => {
-        ///console.log(parentKey, event.currentTarget.id);
         setDragId(parentKey);
         setChildId(Number(event.currentTarget.id));
     }
@@ -332,10 +463,13 @@ function Todo() {
                 return item;
             }
         });
-        console.log(element);
 
         const dragItem = element.subTasks.find((item) => item.key === Number(childid));
         const dropItem = element.subTasks.find((item) => item.key === Number(event.currentTarget.id));
+
+        if(dragItem.isCompleted!==dropItem.isCompleted){
+            return ;
+        }
 
         var updatedSubtask = [];
 
