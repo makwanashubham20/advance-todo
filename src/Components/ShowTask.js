@@ -11,18 +11,22 @@ function ShowTask({item, dragHandler, dropHandler, CompleteTask, favoriteATask, 
             onTouchStart={dragHandler} onTouchMove={dropHandler} onDrop={clearSubtask}>
             <div className="one-task">
                 <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={() => CompleteTask(item.key)} />
-                <span className="editable" onClick={() => CompleteTask(item.key)}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}</span>
-                {item.isFavorite ? <MdFavorite size="30px" className="fav-task" onClick={() => favoriteATask(item.key)} /> : <MdOutlineFavoriteBorder size="30px" className="fav-task" onClick={() => favoriteATask(item.key)} />}
-                <MdDelete size="30px" className="delete-task" onClick={() => deleteTask(item.order)}></MdDelete>
+                <span className="editable" onClick={() => CompleteTask(item.key)}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}
+                    <div>
+                        {item.date}
+                    </div>
+                </span>
+                {item.isFavorite ? <MdFavorite size="35px" className="fav-task" onClick={() => favoriteATask(item.key)} /> : <MdOutlineFavoriteBorder size="35px" className="fav-task" onClick={() => favoriteATask(item.key)} />}
+                <MdDelete size="35px" className="delete-task" onClick={() => deleteTask(item.order)}></MdDelete>
                 {(item.isTask === true) ?
-                    <MdArrowDropUp className="fav-task" size="30px" 
+                    <MdArrowDropUp className="fav-task" size="35px" 
                     onClick={() => {setTask(item.key);}} /> 
-                    : <MdArrowDropDown className='fav-task' size="30px" 
+                    : <MdArrowDropDown className='fav-task' size="35px" 
                         onClick={() => {setTask(item.key);}} />}
             </div>
             {item.isTask?
             <div className="sub-task">
-                <Add type="Subtask" addTask={(name) => addSubtask(name, item.key)} />
+                <Add type="Subtask" addTask={(name, date) => addSubtask(name, date, item.key)} />
                 <ul>
                     {
                         item.subTasks.map(items => {

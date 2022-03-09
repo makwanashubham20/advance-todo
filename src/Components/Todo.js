@@ -17,7 +17,7 @@ function Todo() {
     const [dragid, setDragId] = useState(-1);
     const [childid, setChildId] = useState(-1);
 
-    const addTask = (task) => {
+    const addTask = (task, date) => {
         if (!task) {
             alert("Please enter a valid task...");
             return;
@@ -31,7 +31,8 @@ function Todo() {
             isFavorite: false,
             isTask: true,
             subtaskKey: 0,
-            subTasks: []
+            subTasks: [],
+            date: date
         });
         setKey(prev => prev + 1);
         setList(list);
@@ -171,7 +172,7 @@ function Todo() {
 
     //subTasks functionalities
 
-    const addSubtask = (name, key) => {
+    const addSubtask = (name, date, key) => {
         const list = todoList.map(item => {
             if (item.key === key) {
                 return ({
@@ -185,7 +186,8 @@ function Todo() {
                             isCompleted: false,
                             order: item.subTasks.length + 1,
                             isTask: false,
-                            isFavorite: false
+                            isFavorite: false,
+                            date: date
                         }
                     ]
                 });

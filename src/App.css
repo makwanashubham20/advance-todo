@@ -1,3 +1,7 @@
+*{
+  font-family:'Times New Roman', Times, serif
+}
+
 hr{
   border: 1px solid black;
 }
@@ -82,16 +86,16 @@ li{
 .delete-task{
   cursor: pointer;
   color: red;
-  margin: 1% 2%;
+  margin: 2% 2%;
 }
 
 .Completed{
-  margin: 2% 1%;
+  margin: 3% 1%;
 }
 
 .fav-task{
   cursor: pointer;
-  margin: 1% 0;
+  margin: 2% 0;
 }
 
 .one-task{
