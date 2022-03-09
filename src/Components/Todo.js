@@ -15,6 +15,7 @@ function Todo() {
 
     const [lastKey, setKey] = useState(0 || Number(localStorage.getItem("lastKey")));
     const [dragid, setDragId] = useState(-1);
+    const [childid, setChildId] = useState(-1);
 
     const addTask = (task) => {
         if (!task) {
@@ -85,6 +86,8 @@ function Todo() {
                 }
             }
         });
+
+        list=list.sort((a,b) => (a.order-b.order));
         setList(list);
     }
 
@@ -94,13 +97,15 @@ function Todo() {
     }, [todoList, lastKey]);
 
     const handleDrag = (event) => {
-        setDragId(event.currentTarget.id);
+        setDragId(Number(event.currentTarget.id));
     }
 
     const handleDrop = (event) => {
         if (dragid == Number(event.currentTarget.id)) {
             return;
         }
+
+        if (childid !== -1) return;
 
         const dragItem = todoList.find((item) => item.key === Number(dragid));
         const dropItem = todoList.find((item) => item.key === Number(event.currentTarget.id));
@@ -145,18 +150,19 @@ function Todo() {
                 }
             })
         }
+        updatedList=updatedList.sort((a,b) => (a.order-b.order));
         setList(updatedList);
     }
 
     const setTask = (parentKey) => {
         const list = todoList.map(item => {
-            if(item.key===parentKey){
+            if (item.key === parentKey) {
                 return {
                     ...item,
                     isTask: !item.isTask
                 }
             }
-            else{
+            else {
                 return item;
             }
         });
@@ -193,44 +199,59 @@ function Todo() {
 
     const favoriteAsubTask = (parentKey, childKey) => {
         const list = todoList.map(item => {
-            if(item.key=== parentKey){
+            if (item.key === parentKey) {
                 const sublist = item.subTasks.map(subitem => {
-                    if(subitem.key === childKey){
+                    if (subitem.key === childKey) {
                         return ({
                             ...subitem,
                             isFavorite: !subitem.isFavorite
                         });
                     }
-                    else{
+                    else {
                         return subitem;
                     }
                 });
-                return({
+                return ({
                     ...item,
                     subTasks: sublist
                 });
             }
-            else{
+            else {
                 return item;
             }
         });
         setList(list);
     }
 
-    const deleteSubtask = (parentKey, childKey) => {
+    const deleteSubtask = (parentKey, childOrder) => {
         const list = todoList.map(item => {
-            if(item.key=== parentKey){
-                const sublist = item.subTasks.filter(subitem => {
-                    if(subitem.key !== childKey){
+            if (item.key === parentKey) {
+                var sublist = item.subTasks.filter(subitem => {
+                    if (subitem.order !== childOrder) {
                         return item;
                     }
                 });
-                return({
+
+                sublist=sublist.map(subitem => {
+                    if(subitem.order>childOrder){
+                        return {
+                            ...subitem,
+                            order: subitem.order-1
+                        };
+                    }
+                    else{
+                        return subitem;
+                    }
+                });
+
+                sublist=sublist.sort((a,b) => (a.order-b.order))
+
+                return ({
                     ...item,
                     subTasks: sublist
                 });
             }
-            else{
+            else {
                 return item;
             }
         });
@@ -238,51 +259,141 @@ function Todo() {
     }
 
     const completeSubtask = (parentKey, childKey) => {
-        let flag=1;
+        let flag = 1;
         var list = todoList.map(item => {
-            if(item.key=== parentKey){
+            if (item.key === parentKey) {
                 const sublist = item.subTasks.map(subitem => {
-                    if(subitem.key === childKey){
-                        if(subitem.isCompleted){
-                            flag=0;
+                    if (subitem.key === childKey) {
+                        if (subitem.isCompleted) {
+                            flag = 0;
                         }
                         return ({
                             ...subitem,
                             isCompleted: !subitem.isCompleted
                         });
                     }
-                    else{
-                        if(!subitem.isCompleted){
-                            flag=0;
+                    else {
+                        if (!subitem.isCompleted) {
+                            flag = 0;
                         }
                         return subitem;
                     }
                 });
-                return({
+                return ({
                     ...item,
                     subTasks: sublist
                 });
             }
-            else{
+            else {
                 return item;
             }
         });
 
-        if(flag){
+        if (flag) {
             list = list.map(item => {
-                if(item.key===parentKey){
-                    return{
+                if (item.key === parentKey) {
+                    return {
                         ...item,
-                        isCompleted:true
+                        isCompleted: true
                     }
                 }
-                else{
+                else {
                     return item;
                 }
-            }) 
+            })
         }
 
         setList(list);
+    }
+
+    const clearSubtask = (event) => {
+        setDragId(-1);
+        setChildId(-1);
+    }
+
+    const handleSubtaskdrag = (event, parentKey) => {
+        ///console.log(parentKey, event.currentTarget.id);
+        setDragId(parentKey);
+        setChildId(Number(event.currentTarget.id));
+    }
+
+    const handleSubtaskdrop = (event, parentKey) => {
+        if (childid === -1) return;
+        if (parentKey !== dragid) return;
+
+        if(Number(event.currentTarget.id)===childid){
+            return ;
+        }
+
+        var element = todoList.find(item => {
+            if (item.key === dragid) {
+                return item;
+            }
+        });
+        console.log(element);
+
+        const dragItem = element.subTasks.find((item) => item.key === Number(childid));
+        const dropItem = element.subTasks.find((item) => item.key === Number(event.currentTarget.id));
+
+        var updatedSubtask = [];
+
+        if (dragItem.order > dropItem.order) {
+            updatedSubtask = element.subTasks.map((item) => {
+                if (item.order === dragItem.order) {
+                    return {
+                        ...item,
+                        order: dropItem.order
+                    }
+                }
+                else if (item.order >= dropItem.order && item.order < dragItem.order) {
+                    return {
+                        ...item,
+                        order: item.order + 1
+                    }
+                }
+                else {
+                    return item;
+                }
+            })
+        }
+        else if (dragItem.order < dropItem.order) {
+            updatedSubtask = element.subTasks.map((item) => {
+                if (item.order === dragItem.order) {
+                    return {
+                        ...item,
+                        order: dropItem.order
+                    }
+                }
+                else if (item.order > dragItem.order && item.order <= dropItem.order) {
+                    return {
+                        ...item,
+                        order: item.order - 1
+                    }
+                }
+                else {
+                    return item;
+                }
+            })
+        }
+
+        updatedSubtask = updatedSubtask.sort((a,b) => (a.order-b.order));
+
+        const updatedElement = {
+            ...element,
+            subTasks: updatedSubtask
+        }
+
+        const updatedList = todoList.map(item => {
+            if (item.key === parentKey) {
+                return updatedElement;
+            }
+            else {
+                return item;
+            }
+        })
+
+        setList(updatedList);
+
     }
 
     return (
@@ -295,15 +406,17 @@ function Todo() {
                     <ul>
                         {
                             todoList
-                                .sort((a, b) => a.order - b.order)
                                 .map(items => {
                                     return (
                                         <>
-                                            <ShowTask type="task" 
-                                            completeSubtask={completeSubtask} favoriteAsubTask={favoriteAsubTask} deleteSubtask={deleteSubtask} addSubtask={addSubtask} 
-                                            favoriteATask={favoriteATask} CompleteTask={CompleteTask} deleteTask={deleteTask} setTask={setTask}
-                                            dragHandler={handleDrag} dropHandler={handleDrop} 
-                                            item={items} />
+                                            <ShowTask type="task"
+                                                completeSubtask={completeSubtask} favoriteAsubTask={favoriteAsubTask} deleteSubtask={deleteSubtask} addSubtask={addSubtask}
+                                                favoriteATask={favoriteATask} CompleteTask={CompleteTask} deleteTask={deleteTask} setTask={setTask}
+                                                dragHandler={handleDrag} dropHandler={handleDrop}
+                                                handleSubtaskdrag={handleSubtaskdrag}
+                                                handleSubtaskdrop={handleSubtaskdrop}
+                                                clearSubtask={clearSubtask}
+                                                item={items} />
                                         </>
                                     );
                                 })
