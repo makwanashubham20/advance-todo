@@ -1,4 +1,4 @@
-import { isContentEditable } from '@testing-library/user-event/dist/utils';
+import { isContentEditable, isValidDateValue } from '@testing-library/user-event/dist/utils';
 import React, { useState, useEffect } from 'react';
 import Add from './Add';
 import ShowTask from './ShowTask';
@@ -18,6 +18,7 @@ function Todo() {
     const [lastIncomplete, setLast] = useState(0 || Number(localStorage.getItem("lastIncomplete")))
     const [dragid, setDragId] = useState(-1);
     const [childid, setChildId] = useState(-1);
+    const [runEffect, setRuneffect] = useState({flag: false, order: -1});
 
     const addTask = (task, date) => {
         let list = todoList.map(item => {
@@ -235,8 +236,10 @@ function Todo() {
     //subTasks functionalities
 
     const addSubtask = (name, date, order) => {
+        var flag=false;
         const list = todoList.map(item => {
             if (item.order === order) {
+                flag=item.isCompleted;
                 var updatedList = item.subTasks.map(subitem => {
                     return({
                         ...subitem,
@@ -267,6 +270,10 @@ function Todo() {
         });
 
         setList(list);
+
+        if(flag){
+            setRuneffect({flag: true, order: order});
+        }
     }
 
     const favoriteAsubTask = (parentOrder, childOrder) => {
@@ -343,10 +350,14 @@ function Todo() {
     }
 
     const completeSubtask = (parentOrder, childOrder) => {
-        let flag = 1;
-        let flag2 = true;
+        var flag = 1;
+        var flag3=1;
+        var flag2 = true;
         var list = todoList.map(item => {
             if (item.order === parentOrder) {
+                if(!item.isCompleted){
+                    flag3=0;
+                }
                 var sublist = item.subTasks.map(subitem => {
                     if (subitem.order === childOrder) {
                         if (subitem.isCompleted) {
@@ -422,9 +433,24 @@ function Todo() {
                 return item;
             }
         });
-
+        
         setList(list);
+        
+        if(flag!=flag3){
+            setRuneffect({flag: true, order: parentOrder});
+        }
     }
+
+    React.useLayoutEffect(
+    () => {
+        if(runEffect.flag){
+            CompleteTask(runEffect.order);
+            setRuneffect({flag: false, order: -1});
+        }
+
+    }
+    ,[runEffect])
+
 
     const clearSubtask = (event) => {
         setDragId(-1);

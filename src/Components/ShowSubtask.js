@@ -5,7 +5,7 @@ function ShowSubtask({item, parentOrder, CompleteTask, dragHandler, favoriteATas
         <li key={item.key} id={item.key} draggable={true} onDragStart={(event) => dragHandler(event, parentID)} onDrop={clearSubtask} onDragOver={(event) => dropHandler(event,parentID)}>
             <div className="one-task">
                 <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={(event) => CompleteTask(parentOrder, item.order)} />
-                <span className="editable" onClick={() => CompleteTask(parentOrder, item.order)}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}
+                <span className="editable-subtask">{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}
                     <div>
                         {item.date}
                     </div>

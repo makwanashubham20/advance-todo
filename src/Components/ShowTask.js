@@ -11,7 +11,7 @@ function ShowTask({item, dragHandler, dropHandler, CompleteTask, favoriteATask, 
             onTouchStart={dragHandler} onTouchMove={dropHandler} onDrop={clearSubtask}>
             <div className="one-task">
                 <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={() => CompleteTask(item.order)} />
-                <span className="editable" onClick={() => CompleteTask(item.order)}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}
+                <span className="editable" onClick={() => {setTask(item.key);}}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}
                     <div>
                         {item.date}
                     </div>

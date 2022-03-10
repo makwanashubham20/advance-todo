@@ -1,3 +1,7 @@
+$bluecolor: #007bff;
+$whitecolor: white;
+$lightgreycolor: lightgrey;
+
 *{
   font-family:'Times New Roman', Times, serif
 }
@@ -27,10 +31,10 @@ button {
   margin: 1% 1%;
   padding: 1% 3%;
   border-radius: 0.5rem;
-  background-color: #007bff;
+  background-color: $bluecolor;
   cursor: pointer;
-  color: white;
-  border-color: #007bff;
+  color: $whitecolor;
+  border-color: $bluecolor;
 }
 
 legend{
@@ -41,14 +45,14 @@ legend{
 
 .task-input{
   border-radius: 0.2rem;
-  border-color: lightgrey;
+  border-color: $lightgreycolor;
   padding: 1% 3%;
   margin: 1% 1%;
   width: 40%;
 }
 
 .task-input:focus{
-  border-color: lightgray;
+  border-color: $lightgreycolor;
 }
 
 .button-line{
@@ -66,21 +70,28 @@ ul{
 }
 
 #todo-list{
-  background-color: white;
-  border: 0.2rem solid lightgrey;
+  background-color: $whitecolor;
+  border: 0.2rem solid $lightgreycolor;
   border-radius: 0.5rem;
 }
 
 li{
   margin: 1% 2%;
   border-radius: 0.5rem;
-  border: 0.2rem solid lightgrey;
+  border: 0.2rem solid $lightgreycolor;
 }
 
 .editable{
   padding: 1% 2%;
   margin: 1% 1%;
-  width: 100%
+  width: 100%;
+  cursor: pointer;
+}
+
+.editable-subtask{
+  padding: 1% 2%;
+  margin: 1% 1%;
+  width: 100%;
 }
 
 .delete-task{
