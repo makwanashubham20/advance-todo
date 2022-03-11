@@ -1,4 +1,3 @@
-import { isContentEditable, isValidDateValue } from '@testing-library/user-event/dist/utils';
 import React, { useState, useEffect } from 'react';
 import Add from './Add';
 import ShowTask from './ShowTask';
@@ -59,7 +58,7 @@ function Todo() {
         setList(list);
     }
 
-    const CompleteTask = (order) => {
+    const completeTask = (order) => {
         let flag=true;
         let list = todoList.map(item => {
             if (item.order === order) {
@@ -444,7 +443,7 @@ function Todo() {
     React.useLayoutEffect(
     () => {
         if(runEffect.flag){
-            CompleteTask(runEffect.order);
+            completeTask(runEffect.order);
             setRuneffect({flag: false, order: -1});
         }
 
@@ -559,7 +558,7 @@ function Todo() {
                                         <>
                                             <ShowTask type="task"
                                                 completeSubtask={completeSubtask} favoriteAsubTask={favoriteAsubTask} deleteSubtask={deleteSubtask} addSubtask={addSubtask}
-                                                favoriteATask={favoriteATask} CompleteTask={CompleteTask} deleteTask={deleteTask} setTask={setTask}
+                                                favoriteATask={favoriteATask} completeTask={completeTask} deleteTask={deleteTask} setTask={setTask}
                                                 dragHandler={handleDrag} dropHandler={handleDrop}
                                                 handleSubtaskdrag={handleSubtaskdrag}
                                                 handleSubtaskdrop={handleSubtaskdrop}
