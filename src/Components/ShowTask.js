@@ -1,16 +1,16 @@
-import { clear } from '@testing-library/user-event/dist/clear';
 import { MdDelete, MdFavorite, MdOutlineFavoriteBorder, MdArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 import Add from './Add';
 import ShowSubtask from './ShowSubtask';
+import {Checkbox} from 'antd';
 
-function ShowTask({item, dragHandler, dropHandler, CompleteTask, favoriteATask, deleteTask, setTask, addSubtask, completeSubtask, favoriteAsubTask, deleteSubtask, handleSubtaskdrag, clearSubtask, handleSubtaskdrop}) {
+function ShowTask({item, dragHandler, dropHandler, completeTask, favoriteATask, deleteTask, setTask, addSubtask, completeSubtask, favoriteAsubTask, deleteSubtask, handleSubtaskdrag, clearSubtask, handleSubtaskdrop}) {
 
     return (
         <li key={item.key} id={item.key} draggable={true}
             onDragOver={(ev) => ev.preventDefault()} onDragStart={dragHandler} onDragEnter={dropHandler}
             onTouchStart={dragHandler} onTouchMove={dropHandler} onDrop={clearSubtask}>
             <div className="one-task">
-                <input type="checkbox" className="Completed" checked={item.isCompleted} onChange={() => CompleteTask(item.order)} />
+                <Checkbox className="Completed" onChange={() => completeTask(item.order)} checked={item.isCompleted} />
                 <span className="editable" onClick={() => {setTask(item.key);}}>{item.isCompleted ? (<s>{item.task}</s>) : <>{item.task}</>}
                     <div>
                         {item.date}
@@ -30,7 +30,7 @@ function ShowTask({item, dragHandler, dropHandler, CompleteTask, favoriteATask, 
                 <ul>
                     {
                         item.subTasks.map(items => {
-                            return <ShowSubtask item={items} parentID={item.key} parentOrder={item.order} CompleteTask={completeSubtask} 
+                            return <ShowSubtask item={items} parentID={item.key} parentOrder={item.order} completeTask={completeSubtask} 
                             deleteTask={deleteSubtask} favoriteATask={favoriteAsubTask}
                             dragHandler={handleSubtaskdrag} clearSubtask={clearSubtask}
                             dropHandler={handleSubtaskdrop} />

@@ -1,4 +1,5 @@
 import { memo, useState } from 'react';
+import moment from 'moment';
 
 function Head({ addTask, type }) {
     const [input, setInput] = useState("");
@@ -15,7 +16,7 @@ function Head({ addTask, type }) {
             alert(`Please Enter valid ${type} name.`);
             return ;
         }
-        addTask(input, inputDate);
+        addTask(input, moment(inputDate).format('DD-MM-YYYY'));
         setInput("");
         setDate("");
         setNewTask(false);
